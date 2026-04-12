@@ -208,18 +208,20 @@ function installIhpPdk
     fi
 }
 
-
-
 function installKicad
 {
 
     echo "Installing KiCad..........................."
 
+    # Remove old KiCad PPA which is incompatible with Ubuntu 25.04
+    sudo add-apt-repository --remove ppa:kicad/kicad-6.0-releases -y 2>/dev/null
+
     sudo apt-get update
+
+    # Install KiCad from Ubuntu repository
     sudo apt-get install -y --no-install-recommends \
     kicad \
     kicad-footprints \
-    kicad-libraries \
     kicad-symbols \
     kicad-templates
 
