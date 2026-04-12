@@ -157,22 +157,27 @@ function installSky130Pdk
 
     echo "Installing SKY130 PDK......................"
 
-    
-    # Remove any previous sky130-fd-pdr instance, if any
-    sudo rm -rf /usr/share/local/sky130_fd_pr
-    #installing sky130
-    volare enable --pdk sky130 --pdk-root /usr/share/local/ 0fe599b2afb6708d281543108caf8310912f54af
+    # Use user-space directory instead of system directory to avoid permission errors
+    PDK_ROOT="$HOME/.volare"
+
+    mkdir -p "$PDK_ROOT"
+
+    # Remove any previous SKY130 instance if present
+    rm -rf "$PDK_ROOT/sky130_fd_pr"
+
+    # Installing SKY130 using volare
+    $HOME/.local/bin/volare enable --pdk sky130 --pdk-root "$PDK_ROOT" 0fe599b2afb6708d281543108caf8310912f54af
+
     # Copy SKY130 library
     echo "Copying SKY130 PDK........................."
 
-    sudo mkdir -p /usr/share/local/
-    sudo mv /usr/share/local/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_pr /usr/share/local/
-    rm -rf /usr/share/local/volare/
+    mkdir -p "$HOME/.local/share"
 
+    mv $PDK_ROOT/volare/sky130/versions/*/sky130A/libs.ref/sky130_fd_pr "$HOME/.local/share/"
 
-    # Change ownership from root to the user
-    sudo chown -R $USER:$USER /usr/share/local/sky130_fd_pr/
+    rm -rf "$PDK_ROOT/volare"
 
+    echo "SKY130 PDK installed successfully"
 
 }
 
