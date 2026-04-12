@@ -286,19 +286,23 @@ function installDependency
 function copyKicadLibrary
 {
 
-    # Extract custom KiCad Library
-    tar -xJf library/kicadLibrary.tar.xz
+    echo "Setting up KiCad library..."
 
-    if [ -d ~/.config/kicad/7.0 ]; then
-        echo "kicad config folder already exists"
+    kicad_config="$HOME/.config/kicad"
+
+    # Create KiCad config directory if not present
+    mkdir -p "$kicad_config"
+
+    # Possible locations of sym-lib-table
+    if [ -f "kicadLibrary/template/sym-lib-table" ]; then
+        cp kicadLibrary/template/sym-lib-table "$kicad_config/"
+        echo "Symbol table copied from kicadLibrary"
+    elif [ -f "library/kicadLibrary/template/sym-lib-table" ]; then
+        cp library/kicadLibrary/template/sym-lib-table "$kicad_config/"
+        echo "Symbol table copied from library folder"
     else
-        echo ".config/kicad/7.0 does not exist"
-        mkdir -p ~/.config/kicad/7.0
+        echo "sym-lib-table not found in repository"
     fi
-
-    # Copy symbol table for eSim custom symbols
-    cp kicadLibrary/template/sym-lib-table ~/.config/kicad/7.0/
-    echo "symbol table copied in the directory"
 
 }
 
