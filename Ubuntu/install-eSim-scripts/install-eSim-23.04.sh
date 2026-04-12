@@ -215,17 +215,13 @@ function installKicad
 
     echo "Installing KiCad..........................."
 
-    kicadppa="kicad/kicad-6.0-releases"
-    findppa=$(grep -h -r "^deb.*$kicadppa*" /etc/apt/sources.list* > /dev/null 2>&1 || test $? = 1)
-    if [ -z "$findppa" ]; then
-        echo "Adding KiCad-6 ppa to local apt-repository"
-        sudo add-apt-repository -y ppa:kicad/kicad-6.0-releases
-        sudo apt-get update
-    else
-        echo "KiCad-6 is available in synaptic"
-    fi
-
-    sudo apt-get install -y --no-install-recommends kicad kicad-footprints kicad-libraries kicad-symbols kicad-templates
+    sudo apt-get update
+    sudo apt-get install -y --no-install-recommends \
+    kicad \
+    kicad-footprints \
+    kicad-libraries \
+    kicad-symbols \
+    kicad-templates
 
 }
 
@@ -288,34 +284,19 @@ function installDependency
 function copyKicadLibrary
 {
 
-    #Extract custom KiCad Library
+    # Extract custom KiCad Library
     tar -xJf library/kicadLibrary.tar.xz
 
-    if [ -d ~/.config/kicad/6.0 ];then
+    if [ -d ~/.config/kicad/7.0 ]; then
         echo "kicad config folder already exists"
-    else 
-        echo ".config/kicad/6.0 does not exist"
-        mkdir -p ~/.config/kicad/6.0
+    else
+        echo ".config/kicad/7.0 does not exist"
+        mkdir -p ~/.config/kicad/7.0
     fi
 
-    # Copy symbol table for eSim custom symbols 
-    cp kicadLibrary/template/sym-lib-table ~/.config/kicad/6.0/
+    # Copy symbol table for eSim custom symbols
+    cp kicadLibrary/template/sym-lib-table ~/.config/kicad/7.0/
     echo "symbol table copied in the directory"
-
-    # Copy KiCad symbols made for eSim
-    sudo cp -r kicadLibrary/eSim-symbols/* /usr/share/kicad/symbols/
-
-    set +e      # Temporary disable exit on error
-    trap "" ERR # Do not trap on error of any command
-    
-    # Remove extracted KiCad Library - not needed anymore
-    rm -rf kicadLibrary
-
-    set -e      # Re-enable exit on error
-    trap error_exit ERR
-
-    #Change ownership from Root to the User
-    sudo chown -R $USER:$USER /usr/share/kicad/symbols/
 
 }
 
