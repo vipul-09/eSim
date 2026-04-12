@@ -257,8 +257,8 @@ function installDependency
     #sudo apt-get install -y python3-matplotlib
     pip install matplotlib
 
-    echo "Installing Distutils......................."
-    sudo apt-get install -y python3-distutils
+    echo "Installing setuptools......................."
+    sudo apt install python3-setuptools
 
     # Install NgVeri Depedencies
     echo "Installing Pip3............................"
